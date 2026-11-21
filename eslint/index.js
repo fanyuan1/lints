@@ -5,6 +5,8 @@ import noComments from "./rules/no-comments.js";
 const EXTENSIONS = "{js,jsx,ts,tsx,mjs,cjs,mts,cts}";
 const TYPED_EXTENSIONS = "{ts,tsx,mts,cts}";
 
+const TYPED_IGNORES = ["**/*.config.{ts,mts,cts}", "**/*.d.{ts,mts,cts}"];
+
 const IGNORES = [
   "**/node_modules/**",
   "**/dist/**",
@@ -21,7 +23,7 @@ const IGNORES = [
 ];
 
 const plugin = {
-  meta: { name: "lints", version: "0.4.0" },
+  meta: { name: "lints", version: "0.4.1" },
   rules: {
     "no-comments": noComments,
     "ban-ts-comment": tsPlugin.rules["ban-ts-comment"],
@@ -45,11 +47,12 @@ function scopeBase(scope) {
   return scope ? `${scope.replace(/^\.\//, "").replace(/\/+$/, "")}/` : "";
 }
 
-export function typedConfig({ scope } = {}) {
+export function typedConfig({ scope, ignores = [] } = {}) {
   return [
     {
       name: "lints/typed",
       files: [`${scopeBase(scope)}**/*.${TYPED_EXTENSIONS}`],
+      ignores: [...TYPED_IGNORES, ...ignores],
       languageOptions: {
         parser: tsParser,
         parserOptions: { projectService: true, tsconfigRootDir: process.cwd() },
@@ -60,7 +63,7 @@ export function typedConfig({ scope } = {}) {
   ];
 }
 
-export function noCommentsConfig({ scope, typed = true } = {}) {
+export function noCommentsConfig({ scope, typed = true, typedIgnores = [] } = {}) {
   return [
     { name: "lints/ignores", ignores: IGNORES },
     { name: "lints/directives", linterOptions: { reportUnusedDisableDirectives: "error" } },
@@ -74,7 +77,7 @@ export function noCommentsConfig({ scope, typed = true } = {}) {
       plugins: { lints: plugin },
       rules: RULES,
     },
-    ...(typed ? typedConfig({ scope }) : []),
+    ...(typed ? typedConfig({ scope, ignores: typedIgnores }) : []),
   ];
 }
 

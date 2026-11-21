@@ -2,7 +2,18 @@
 
 Shared lint rules that steer coding agents. This repo holds every rule a project or its CI runs: the ESLint plugin, and checks for other languages. It is public, so any build server can install it. Agent skills and instructions live elsewhere.
 
-## Rule: `lints/no-comments`
+## Rules
+
+| Rule | What it catches | Files |
+|---|---|---|
+| `lints/no-comments` | Every code comment, except directives, license headers and shebangs | JS and TS |
+| `lints/ban-ts-comment` | `@ts-ignore` and `@ts-nocheck`. `@ts-expect-error` is allowed. | JS and TS |
+| `lints/no-floating-promises` | A promise that is neither awaited, returned, `void`-ed nor given a `.catch()` | TS in a tsconfig |
+| unused `eslint-disable` | A disable line that no longer suppresses anything (reported as an error) | all |
+
+`lints/no-floating-promises` needs type information, so it runs only on TypeScript files that a `tsconfig.json` includes. It skips `*.config.ts` and `.d.ts` files. Skip other files no tsconfig covers with `noCommentsConfig({ typedIgnores: ["test/**"] })`, or turn typed rules off with `typed: false`.
+
+## `lints/no-comments` in detail
 
 Reports every code comment. Comments hide workarounds that agents copy, and they go stale. Code explains itself through names and types. Non-obvious decisions go in `docs/decisions/` as ADRs.
 
@@ -31,7 +42,7 @@ In an existing flat config, put `...lints.configs.recommended` at the end of the
 
 ## The ratchet
 
-`npx eslint . --suppress-rule lints/no-comments` writes `eslint-suppressions.json`. Existing comments pass. New comments fail. After you remove comments, run `npx eslint . --prune-suppressions` so the baseline shrinks.
+`npx eslint . --suppress-rule <rule>` writes `eslint-suppressions.json`, for example `--suppress-rule lints/no-floating-promises`. Existing comments pass. New comments fail. After you remove comments, run `npx eslint . --prune-suppressions` so the baseline shrinks.
 
 ## Other languages
 

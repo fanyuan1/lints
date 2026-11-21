@@ -1,6 +1,6 @@
 {
   "name": "lints",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Shared lint rules that steer coding agents: ESLint plugin, plus checks for other languages.",
   "type": "module",
   "main": "./eslint/index.js",

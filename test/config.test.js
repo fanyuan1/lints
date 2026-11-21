@@ -56,6 +56,11 @@ describe("recommended config", () => {
     assert.match(ids[0], /Unused eslint-disable directive/);
   });
 
+  it("skips typed rules on config and declaration files", async () => {
+    assert.deepEqual(await ruleIdsFor("vite.config.ts", "export default {};\n"), []);
+    assert.deepEqual(await ruleIdsFor("globals.d.ts", "declare const a: number;\n"), []);
+  });
+
   it("does not run typed rules on JavaScript", async () => {
     const ids = await ruleIdsFor("plain.js", "async function load() { return 1; }\nload();\n");
     assert.deepEqual(ids, []);
