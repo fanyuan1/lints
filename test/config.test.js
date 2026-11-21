@@ -1,0 +1,63 @@
+import { describe, it } from "node:test";
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { ESLint } from "eslint";
+import { noCommentsConfig } from "../eslint/index.js";
+
+const fixtureDir = path.join(path.dirname(fileURLToPath(import.meta.url)), "fixtures", "typed");
+
+async function ruleIdsFor(fileName, code) {
+  const cwd = process.cwd();
+  process.chdir(fixtureDir);
+  try {
+    const eslint = new ESLint({ cwd: fixtureDir, overrideConfigFile: true, overrideConfig: noCommentsConfig() });
+    const filePath = path.join(fixtureDir, fileName);
+    fs.writeFileSync(filePath, code);
+    try {
+      const [result] = await eslint.lintFiles([filePath]);
+      return result.messages.map((message) => message.ruleId ?? message.message);
+    } finally {
+      fs.rmSync(filePath);
+    }
+  } finally {
+    process.chdir(cwd);
+  }
+}
+
+describe("recommended config", () => {
+  it("reports a floating promise in TypeScript", async () => {
+    const ids = await ruleIdsFor("floating.ts", "async function load(): Promise<number> { return 1; }\nload();\n");
+    assert.deepEqual(ids, ["lints/no-floating-promises"]);
+  });
+
+  it("allows an awaited or voided promise", async () => {
+    const ids = await ruleIdsFor(
+      "handled.ts",
+      "async function load(): Promise<number> { return 1; }\nexport async function run(): Promise<void> { await load(); void load(); }\n",
+    );
+    assert.deepEqual(ids, []);
+  });
+
+  it("bans @ts-ignore and @ts-nocheck", async () => {
+    assert.deepEqual(await ruleIdsFor("ignore.ts", "// @ts-ignore\nexport const a: number = 1;\n"), ["lints/ban-ts-comment"]);
+    assert.deepEqual(await ruleIdsFor("nocheck.ts", "// @ts-nocheck\nexport const a = 1;\n"), ["lints/ban-ts-comment"]);
+  });
+
+  it("allows @ts-expect-error", async () => {
+    const ids = await ruleIdsFor("expect.ts", "// @ts-expect-error\nexport const a: number = 'x';\n");
+    assert.deepEqual(ids, []);
+  });
+
+  it("reports an unused disable directive", async () => {
+    const ids = await ruleIdsFor("unused.ts", "// eslint-disable-next-line no-console\nexport const a = 1;\n");
+    assert.equal(ids.length, 1);
+    assert.match(ids[0], /Unused eslint-disable directive/);
+  });
+
+  it("does not run typed rules on JavaScript", async () => {
+    const ids = await ruleIdsFor("plain.js", "async function load() { return 1; }\nload();\n");
+    assert.deepEqual(ids, []);
+  });
+});
