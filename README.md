@@ -35,7 +35,7 @@ In an existing flat config, put `...lints.configs.recommended` at the end of the
 
 ## Other languages
 
-- **Godot**: `scripts/gdscript_no_comments.py` is the same rule for GDScript, with a baseline in `gdscript-suppressions.json`. Projects call it from a clone at `~/projects/lints`. See `godot/README.md`.
+- **Godot**: `scripts/gdscript_no_comments.py` is the same rule for GDScript, with a baseline in `gdscript-suppressions.json`. Projects download it at a pinned commit; no clone needed. See `godot/README.md`.
 - **Dart / Flutter**: planned. See `dart/README.md`.
 
 ## Add a rule
