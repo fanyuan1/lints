@@ -1,6 +1,6 @@
 # lints
 
-Shared ESLint rules that steer coding agents. Public, so any build server can install it. Skills and agent instructions live in the private `dev-kit` repo.
+Shared lint rules that steer coding agents. This repo holds every rule a project or its CI runs: the ESLint plugin, and checks for other languages. It is public, so any build server can install it. Agent skills and instructions live elsewhere.
 
 ## Rule: `lints/no-comments`
 
@@ -32,6 +32,17 @@ In an existing flat config, put `...lints.configs.recommended` at the end of the
 ## The ratchet
 
 `npx eslint . --suppress-rule lints/no-comments` writes `eslint-suppressions.json`. Existing comments pass. New comments fail. After you remove comments, run `npx eslint . --prune-suppressions` so the baseline shrinks.
+
+## Other languages
+
+- **Godot**: `scripts/gdscript_no_comments.py` is the same rule for GDScript, with a baseline in `gdscript-suppressions.json`. Projects call it from a clone at `~/projects/lints`. See `godot/README.md`.
+- **Dart / Flutter**: planned. See `dart/README.md`.
+
+## Add a rule
+
+1. Add `eslint/rules/<name>.js` and `test/<name>.test.js` (ESLint `RuleTester`, bad and good cases).
+2. Add it to `plugin.rules` and to `RULES` in `eslint/index.js`. Every config gets it.
+3. Run `npm run check`. Code in this repo has no comments either.
 
 ## Update
 

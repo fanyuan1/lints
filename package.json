@@ -1,7 +1,7 @@
 {
   "name": "lints",
-  "version": "0.2.0",
-  "description": "Shared ESLint rules that steer coding agents. Starts with no-comments.",
+  "version": "0.3.0",
+  "description": "Shared lint rules that steer coding agents: ESLint plugin, plus checks for other languages.",
   "type": "module",
   "main": "./eslint/index.js",
   "exports": {
@@ -12,7 +12,7 @@
   ],
   "scripts": {
     "lint": "eslint .",
-    "test": "node --test test/",
+    "test": "node --test test/ && python3 -m unittest discover -s test -p '*_test.py'",
     "check": "npm run lint && npm test"
   },
   "dependencies": {

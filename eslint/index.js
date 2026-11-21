@@ -19,8 +19,12 @@ const IGNORES = [
 ];
 
 const plugin = {
-  meta: { name: "lints", version: "0.1.0" },
+  meta: { name: "lints", version: "0.3.0" },
   rules: { "no-comments": noComments },
+};
+
+const RULES = {
+  "lints/no-comments": "error",
 };
 
 export function noCommentsConfig({ scope } = {}) {
@@ -35,7 +39,7 @@ export function noCommentsConfig({ scope } = {}) {
         parserOptions: { ecmaFeatures: { jsx: true } },
       },
       plugins: { "lints": plugin },
-      rules: { "lints/no-comments": "error" },
+      rules: RULES,
     },
   ];
 }
