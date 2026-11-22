@@ -9,4 +9,4 @@ How Dart and Flutter projects will use lints. Not built yet. Build it the first 
 - Projects turn the plugin on in the `plugins:` section of `analysis_options.yaml`, pointing at this repo (git or local path). Confirm the exact syntax against the Dart docs when you build it.
 - Each project gets a Makefile `check` target that runs `dart analyze` (or `flutter analyze`) and the tests.
 
-Until then, `/delete-comments` creates the Makefile `check` target without a comments check, and tells you so.
+Until then, `/lints-init` creates the Makefile `check` target without a comments check, and tells you so.

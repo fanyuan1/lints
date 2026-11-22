@@ -9,7 +9,7 @@ How Godot projects use lints. Nothing is installed. Each project's Makefile down
    - It skips `.godot/`, `addons/` (third-party code), `build/` and `dist/`.
    - It keeps a baseline in `gdscript-suppressions.json`, like ESLint: `--suppress-all` records today's comments, `--prune-suppressions` shrinks the baseline.
 2. **Style lint**: a shared `gdlintrc` for [gdtoolkit](https://github.com/Scony/godot-gdscript-toolkit) (`pip install gdtoolkit`) will live in this folder. Projects will download it the same way as the comments check. Not added yet.
-3. **Makefile**: each project gets a `check` target. `/delete-comments` creates it:
+3. **Makefile**: each project gets a `check` target. `/lints-init` creates it:
 
    ```make
    LINTS_REF ?= <full lints commit sha>
@@ -23,6 +23,6 @@ How Godot projects use lints. Nothing is installed. Each project's Makefile down
    	python3 $(GD_CHECK) .
    ```
 
-   To pick up rule changes, bump `LINTS_REF` (`/sync-dev-kit` does this).
+   To pick up rule changes, bump `LINTS_REF` (`/lints-update` does this).
 
 Run `make check` before you finish a task.
