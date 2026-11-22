@@ -69,7 +69,7 @@ function strictTypeCheckedRules() {
 const TYPED_SETTINGS = { ...strictTypeCheckedRules(), ...TYPED_OVERRIDES };
 
 const plugin = {
-  meta: { name: "lints", version: "0.5.0" },
+  meta: { name: "lints", version: "0.5.1" },
   rules: {
     "no-comments": noComments,
     ...Object.fromEntries(Object.keys(CORE_RULES).map((id) => [id, builtinRules.get(id)])),
